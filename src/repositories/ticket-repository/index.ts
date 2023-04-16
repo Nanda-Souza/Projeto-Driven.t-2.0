@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Ticket } from '@prisma/client';
 import { prisma } from '@/config';
 
 async function findTicketTypes(){
@@ -6,28 +6,21 @@ async function findTicketTypes(){
   
 }
 
-/*async function findByEmail(email: string, select?: Prisma.UserSelect) {
-  const params: Prisma.UserFindUniqueArgs = {
-    where: {
-      email,
-    },
-  };
-
-  if (select) {
-    params.select = select;
-  }
-
-  return prisma.user.findUnique(params);
+async function createTicket(ticket: CreateTicketParams){
+  return prisma.ticket.create({
+      data: ticket,
+      include: {
+        TicketType: true,
+      }
+  });
+  
 }
 
-async function create(data: Prisma.UserUncheckedCreateInput) {
-  return prisma.user.create({
-    data,
-  });
-}*/
+export type CreateTicketParams = Omit<Ticket, 'id' | 'createdAt' | 'updatedAt'>;
 
 const ticketRepository = {
-  findTicketTypes,  
+  findTicketTypes,
+  createTicket,  
 };
 
 export default ticketRepository;
