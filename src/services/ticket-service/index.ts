@@ -37,6 +37,23 @@ async function postCreateTicket(userId: number, ticketTypeId: number) {
   return ticket;
 }
 
+async function getTicketByUserId(userId: number) {
+    
+  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
+  
+  if (!enrollment) {    
+    throw notFoundError();
+  } 
+
+  const ticket = await ticketRepository.findTicket(enrollment.id);
+
+  if (!ticket) {
+    throw notFoundError();
+  }
+
+  return ticket;
+}
+
 
 export type TicketType = {
   ticketTypeId: number;
@@ -47,6 +64,7 @@ export type TicketType = {
 const ticketsService = {
   getTicketByType,
   postCreateTicket,
+  getTicketByUserId,
 };
 
 export default ticketsService;
