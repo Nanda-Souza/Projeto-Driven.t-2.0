@@ -1,9 +1,19 @@
 import { prisma } from '@/config';
+import { Payment } from '@prisma/client';
 
 async function findTicket(ticketId:number) {
   return prisma.ticket.findUnique({
     where:{
       id: ticketId
+    }
+  })
+  
+}
+
+async function findTicketPrice(ticketTypeId:number) {
+  return prisma.ticketType.findUnique({
+    where:{
+      id: ticketTypeId
     }
   })
   
@@ -27,10 +37,33 @@ async function findPayment(ticketId:number) {
   
 }
 
+async function createPayment(payment: CreatePaymentParams){
+  const createdPayment = await prisma.payment.create({
+        data: payment
+    });
+  
+    if (createdPayment){
+      await prisma.ticket.update({
+        where: {
+          id: payment.ticketId
+        },
+        data: {
+          status: 'PAID',
+        },
+      })
+    }
+  
+  return createdPayment
+}
+
+export type CreatePaymentParams = Omit<Payment, 'id' | 'createdAt' | 'updatedAt'>;
+
 const paymentRepository = {
   findTicket,
   findEnrollment,
-  findPayment  
+  findPayment,
+  createPayment,
+  findTicketPrice,  
 };
 
 export default paymentRepository;

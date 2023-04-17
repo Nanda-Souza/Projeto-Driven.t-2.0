@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { authenticateToken, validateQuery } from '@/middlewares';
-import { getPayment } from '@/controllers';
+import { authenticateToken, validateQuery, validateBody } from '@/middlewares';
+import { getPayment, createPayment } from '@/controllers';
 import { ticketIdSchema } from '@/schemas';
+import { createPaymentSchema } from '@/schemas';
 
 
 const paymentsRouter = Router();
@@ -9,7 +10,6 @@ const paymentsRouter = Router();
 paymentsRouter
   .all('/*', authenticateToken)
   .get('/', validateQuery(ticketIdSchema), getPayment)
-  /*.post('/', validateBody(createTicketSchema), createTicket)
-  .get('/', getTicket)*/;
+  .post('/process', validateBody(createPaymentSchema), createPayment);
 
 export { paymentsRouter };
