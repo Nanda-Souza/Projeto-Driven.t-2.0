@@ -60,7 +60,6 @@ export type TicketType = {
 };
 
 
-
 const ticketsService = {
   getTicketByType,
   postCreateTicket,
